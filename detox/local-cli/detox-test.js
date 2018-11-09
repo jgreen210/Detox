@@ -5,7 +5,6 @@ const path = require('path');
 const cp = require('child_process');
 const fs = require('fs-extra');
 const _ = require('lodash');
-const environment = require('../src/utils/environment');
 const buildDefaultArtifactsRootDirpath = require('../src/artifacts/utils/buildDefaultArtifactsRootDirpath');
 const DetoxConfigError = require('../src/errors/DetoxConfigError');
 const config = require(path.join(process.cwd(), 'package.json')).detox;
@@ -50,8 +49,6 @@ program
   .parse(process.argv);
 
 program.artifactsLocation = buildDefaultArtifactsRootDirpath(program.configuration, program.artifactsLocation);
-
-clearDeviceRegistryLockFile();
 
 if (!program.configuration) {
   throw new DetoxConfigError(`Cannot determine which configuration to use.
@@ -195,12 +192,6 @@ function getPlatformSpecificString(platform) {
   }
 
   return platformRevertString;
-}
-
-function clearDeviceRegistryLockFile() {
-  const lockFilePath = environment.getDeviceLockFilePath();
-  fs.ensureFileSync(lockFilePath);
-  fs.writeFileSync(lockFilePath, '[]');
 }
 
 function getDefaultConfiguration() {
